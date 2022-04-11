@@ -1,0 +1,6 @@
+apiVersion: iam.x893675.github.io/v1
+kind: Token
+metadata:
+  name: token-sample
+spec:
+  # TODO(user): Add fields here
