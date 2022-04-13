@@ -6,4 +6,6 @@ kubebuilder edit --multigroup=true
 kubebuilder create api --group demo --version v1 --kind Guestbook
 
 kubebuilder create api --group iam --version v1 --kind Token
+
+kubebuilder create webhook --group demo --version v1 --kind Guestbook --defaulting --programmatic-validation
 ```

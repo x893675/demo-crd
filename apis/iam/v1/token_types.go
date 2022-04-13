@@ -23,6 +23,17 @@ import (
 // EDIT THIS FILE!  THIS IS SCAFFOLDING FOR YOU TO OWN!
 // NOTE: json tags are required.  Any new fields you add must have json tags for the fields to be serialized.
 
+type TokenType string
+
+// +kubebuilder:validation:Enum=access_token;refresh_token;cluster_token
+const (
+	// RefreshToken and AccessToken used for front end and http client
+	RefreshToken TokenType = "refresh_token"
+	AccessToken  TokenType = "access_token"
+	// CLusterToken used for kubeconfig
+	ClusterToken TokenType = "cluster_token"
+)
+
 // TokenSpec defines the desired state of Token
 type TokenSpec struct {
 	// INSERT ADDITIONAL SPEC FIELDS - desired state of cluster
