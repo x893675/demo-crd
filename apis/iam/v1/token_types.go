@@ -36,8 +36,8 @@ type TokenStatus struct {
 //+kubebuilder:subresource:status
 //+kubebuilder:resource:scope=Cluster
 // +kubebuilder:printcolumn:JSONPath=".metadata.labels.iam\\.x893675\\.io/user",name="User",type=string
-//+kubebuilder:printcolumn:name="IssueAt",type="date",JSONPath=".metadata.creationTimestamp"
-//+kubebuilder:printcolumn:name="ExpiresAt",type="date",JSONPath=".status.expiresAt"
+//+kubebuilder:printcolumn:name="IssueAt",type="string",format="date-time",JSONPath=".metadata.creationTimestamp"
+//+kubebuilder:printcolumn:name="ExpiresAt",type="string",format="date-time",JSONPath=".status.expiresAt"
 //+kubebuilder:resource:categories="all",scope="Cluster",shortName="tk",singular="token"
 
 // Token is the Schema for the tokens API

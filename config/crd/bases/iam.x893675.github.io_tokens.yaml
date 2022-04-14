@@ -23,12 +23,14 @@ spec:
     - jsonPath: .metadata.labels.iam\.x893675\.io/user
       name: User
       type: string
-    - jsonPath: .metadata.creationTimestamp
+    - format: date-time
+      jsonPath: .metadata.creationTimestamp
       name: IssueAt
-      type: date
-    - jsonPath: .status.expiresAt
+      type: string
+    - format: date-time
+      jsonPath: .status.expiresAt
       name: ExpiresAt
-      type: date
+      type: string
     name: v1
     schema:
       openAPIV3Schema:

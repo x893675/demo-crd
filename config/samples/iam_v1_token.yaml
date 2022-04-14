@@ -2,5 +2,9 @@ apiVersion: iam.x893675.github.io/v1
 kind: Token
 metadata:
   name: token-sample
-spec:
+  labels:
+    iam.x893675.io/user: zhuxiaowei
   # TODO(user): Add fields here
+accessToken: dkfdjflkdjlkf
+refreshToken: dkjkldjfkljdl
+expiresIn: 7200
