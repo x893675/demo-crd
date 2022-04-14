@@ -33,18 +33,6 @@ secretGenerator:
 generatorOptions:
   disableNameSuffixHash: true
 
-patchesJson6902:
-- target:
-    group: admissionregistration.k8s.io
-    version: v1
-    name: mutating-webhook-configuration
-  path: webhookcainjection_patch.yaml
-- target:
-    group: admissionregistration.k8s.io
-    version: v1
-    name: validating-webhook-configuration
-  path: webhookcainjection_patch.yaml
-
 patchesStrategicMerge:
 # Protect the /metrics endpoint by putting it behind auth.
 # If you want your controller-manager to expose the /metrics
@@ -62,7 +50,7 @@ patchesStrategicMerge:
 # [CERTMANAGER] To enable cert-manager, uncomment all sections with 'CERTMANAGER'.
 # Uncomment 'CERTMANAGER' sections in crd/kustomization.yaml to enable the CA injection in the admission webhooks.
 # 'CERTMANAGER' needs to be enabled to use ca injection
-#- webhookcainjection_patch.yaml
+- webhookcainjection_patch.yaml
 
 # the following config is for teaching kustomize how to do var substitution
 vars:
