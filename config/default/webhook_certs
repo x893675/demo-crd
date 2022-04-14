@@ -1,0 +1,26 @@
+- name: demo-crd
+  baseName: demo-crd/ca
+  caName: ""
+  cfg:
+    algorithm: 1
+    commonName: demo-crd
+    # In years, ignoring leap years， 1 year = 365 day
+    duration: 99
+- name: demo-controller
+  baseName: demo-crd/controller
+  caName: "demo-crd"
+  cfg:
+    algorithm: 1
+    duration: 99
+    usages:
+      - 1
+      - 2
+    altNames:
+      dns:
+        - localhost
+		-
+      ips:
+        - 127.0.0.1
+    commonName: etcd-server
+    organization:
+      - "system:master"
