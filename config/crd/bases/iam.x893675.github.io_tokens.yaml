@@ -9,22 +9,44 @@ metadata:
 spec:
   group: iam.x893675.github.io
   names:
+    categories:
+    - all
     kind: Token
     listKind: TokenList
     plural: tokens
+    shortNames:
+    - tk
     singular: token
-  scope: Namespaced
+  scope: Cluster
   versions:
-  - name: v1
+  - additionalPrinterColumns:
+    - jsonPath: .metadata.labels.iam\.x893675\.io/user
+      name: User
+      type: string
+    - jsonPath: .metadata.creationTimestamp
+      name: IssueAt
+      type: date
+    - jsonPath: .status.expiresAt
+      name: ExpiresAt
+      type: date
+    name: v1
     schema:
       openAPIV3Schema:
         description: Token is the Schema for the tokens API
         properties:
+          accessToken:
+            description: access token
+            type: string
           apiVersion:
             description: 'APIVersion defines the versioned schema of this representation
               of an object. Servers should convert recognized schemas to the latest
               internal value, and may reject unrecognized values. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#resources'
             type: string
+          expiresIn:
+            description: Expire time (second) for the token. 0 means no ttl
+            format: int64
+            minimum: 0
+            type: integer
           kind:
             description: 'Kind is a string value representing the REST resource this
               object represents. Servers may infer this from the endpoint the client
@@ -32,17 +54,18 @@ spec:
             type: string
           metadata:
             type: object
-          spec:
-            description: TokenSpec defines the desired state of Token
-            properties:
-              foo:
-                description: Foo is an example field of Token. Edit token_types.go
-                  to remove/update
-                type: string
-            type: object
+          refreshToken:
+            description: refresh token
+            type: string
           status:
             description: TokenStatus defines the observed state of Token
+            properties:
+              expiresAt:
+                format: date-time
+                type: string
             type: object
+        required:
+        - accessToken
         type: object
     served: true
     storage: true

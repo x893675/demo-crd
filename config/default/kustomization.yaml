@@ -24,6 +24,27 @@ bases:
 # [PROMETHEUS] To enable prometheus monitor, uncomment all sections with 'PROMETHEUS'.
 #- ../prometheus
 
+secretGenerator:
+- name: webhook-server-cert
+  files:
+  - ca.crt
+  - tls.crt
+  - tls.key
+generatorOptions:
+  disableNameSuffixHash: true
+
+patchesJson6902:
+- target:
+    group: admissionregistration.k8s.io
+    version: v1
+    name: mutating-webhook-configuration
+  path: webhookcainjection_patch.yaml
+- target:
+    group: admissionregistration.k8s.io
+    version: v1
+    name: validating-webhook-configuration
+  path: webhookcainjection_patch.yaml
+
 patchesStrategicMerge:
 # Protect the /metrics endpoint by putting it behind auth.
 # If you want your controller-manager to expose the /metrics

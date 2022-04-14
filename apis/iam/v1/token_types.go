@@ -23,42 +23,41 @@ import (
 // EDIT THIS FILE!  THIS IS SCAFFOLDING FOR YOU TO OWN!
 // NOTE: json tags are required.  Any new fields you add must have json tags for the fields to be serialized.
 
-type TokenType string
-
-// +kubebuilder:validation:Enum=access_token;refresh_token;cluster_token
-const (
-	// RefreshToken and AccessToken used for front end and http client
-	RefreshToken TokenType = "refresh_token"
-	AccessToken  TokenType = "access_token"
-	// CLusterToken used for kubeconfig
-	ClusterToken TokenType = "cluster_token"
-)
-
-// TokenSpec defines the desired state of Token
-type TokenSpec struct {
-	// INSERT ADDITIONAL SPEC FIELDS - desired state of cluster
-	// Important: Run "make" to regenerate code after modifying this file
-
-	// Foo is an example field of Token. Edit token_types.go to remove/update
-	Foo string `json:"foo,omitempty"`
-}
-
 // TokenStatus defines the observed state of Token
 type TokenStatus struct {
 	// INSERT ADDITIONAL STATUS FIELD - define observed state of cluster
 	// Important: Run "make" to regenerate code after modifying this file
+
+	// +optional
+	ExpiresAt *metav1.Time `json:"expiresAt,omitempty"`
 }
 
 //+kubebuilder:object:root=true
 //+kubebuilder:subresource:status
+//+kubebuilder:resource:scope=Cluster
+// +kubebuilder:printcolumn:JSONPath=".metadata.labels.iam\\.x893675\\.io/user",name="User",type=string
+//+kubebuilder:printcolumn:name="IssueAt",type="date",JSONPath=".metadata.creationTimestamp"
+//+kubebuilder:printcolumn:name="ExpiresAt",type="date",JSONPath=".status.expiresAt"
+//+kubebuilder:resource:categories="all",scope="Cluster",shortName="tk",singular="token"
 
 // Token is the Schema for the tokens API
 type Token struct {
 	metav1.TypeMeta   `json:",inline"`
 	metav1.ObjectMeta `json:"metadata,omitempty"`
 
-	Spec   TokenSpec   `json:"spec,omitempty"`
-	Status TokenStatus `json:"status,omitempty"`
+	// +kubebuilder:validation:Required
+	// access token
+	AccessToken string `json:"accessToken"`
+
+	// refresh token
+	// +optional
+	RefreshToken string `json:"refreshToken,omitempty"`
+
+	// +kubebuilder:validation:Minimum=0
+	// Expire time (second) for the token. 0 means no ttl
+	// +optional
+	ExpiresIn *int64      `json:"expiresIn,omitempty"`
+	Status    TokenStatus `json:"status,omitempty"`
 }
 
 //+kubebuilder:object:root=true
