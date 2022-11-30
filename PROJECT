@@ -27,4 +27,13 @@ resources:
   kind: Token
   path: github.com/x893675/demo-crd/apis/iam/v1
   version: v1
+- api:
+    crdVersion: v1
+    namespaced: true
+  controller: true
+  domain: x893675.github.io
+  group: apps
+  kind: SimpleDeployment
+  path: github.com/x893675/demo-crd/apis/apps/v1
+  version: v1
 version: "3"

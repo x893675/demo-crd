@@ -31,8 +31,10 @@ import (
 	"sigs.k8s.io/controller-runtime/pkg/healthz"
 	"sigs.k8s.io/controller-runtime/pkg/log/zap"
 
+	appsv1 "github.com/x893675/demo-crd/apis/apps/v1"
 	demov1 "github.com/x893675/demo-crd/apis/demo/v1"
 	iamv1 "github.com/x893675/demo-crd/apis/iam/v1"
+	appscontrollers "github.com/x893675/demo-crd/controllers/apps"
 	democontrollers "github.com/x893675/demo-crd/controllers/demo"
 	iamcontrollers "github.com/x893675/demo-crd/controllers/iam"
 	//+kubebuilder:scaffold:imports
@@ -48,6 +50,7 @@ func init() {
 
 	utilruntime.Must(demov1.AddToScheme(scheme))
 	utilruntime.Must(iamv1.AddToScheme(scheme))
+	utilruntime.Must(appsv1.AddToScheme(scheme))
 	//+kubebuilder:scaffold:scheme
 }
 
@@ -108,6 +111,13 @@ func main() {
 	}
 	if err = (&demov1.Guestbook{}).SetupWebhookWithManager(mgr); err != nil {
 		setupLog.Error(err, "unable to create webhook", "webhook", "Guestbook")
+		os.Exit(1)
+	}
+	if err = (&appscontrollers.SimpleDeploymentReconciler{
+		Client: mgr.GetClient(),
+		Scheme: mgr.GetScheme(),
+	}).SetupWithManager(mgr); err != nil {
+		setupLog.Error(err, "unable to create controller", "controller", "SimpleDeployment")
 		os.Exit(1)
 	}
 	//+kubebuilder:scaffold:builder
