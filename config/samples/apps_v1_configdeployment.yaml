@@ -1,0 +1,12 @@
+apiVersion: apps.x893675.github.io/v1
+kind: ConfigDeployment
+metadata:
+  labels:
+    app.kubernetes.io/name: configdeployment
+    app.kubernetes.io/instance: configdeployment-sample
+    app.kubernetes.io/part-of: demo-crd2
+    app.kuberentes.io/managed-by: kustomize
+    app.kubernetes.io/created-by: demo-crd2
+  name: configdeployment-sample
+spec:
+  # TODO(user): Add fields here
