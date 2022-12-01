@@ -67,7 +67,7 @@ type ConfigDeploymentReconciler struct {
 // For more details, check Reconcile and its Result here:
 // - https://pkg.go.dev/sigs.k8s.io/controller-runtime@v0.13.0/pkg/reconcile
 func (r *ConfigDeploymentReconciler) Reconcile(ctx context.Context, req ctrl.Request) (ctrl.Result, error) {
-	logs := log.FromContext(ctx).WithValues("simpleDeployment", req.NamespacedName)
+	logs := log.FromContext(ctx)
 
 	var configDeployment appsv1.ConfigDeployment
 	if err := r.Get(ctx, req.NamespacedName, &configDeployment); err != nil {

@@ -16,6 +16,10 @@ kubebuilder create api --group iam --version v1 --kind Token
 
 kubebuilder create webhook --group demo --version v1 --kind Guestbook --defaulting --programmatic-validation
 
+kubebuilder create api --group apps --version v1 --kind SimpleDeployment
+
+kubebuilder create api --group apps --version v1 --kind ConfigDeployment
+
 
 ## Description
 // TODO(user): An in-depth paragraph about your project and overview of use

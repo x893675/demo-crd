@@ -1,0 +1,137 @@
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  creationTimestamp: null
+  name: manager-role
+rules:
+- apiGroups:
+  - ""
+  resources:
+  - configmaps
+  verbs:
+  - get
+  - list
+  - watch
+- apiGroups:
+  - apps
+  resources:
+  - deployments
+  verbs:
+  - create
+  - delete
+  - get
+  - list
+  - patch
+  - update
+  - watch
+- apiGroups:
+  - apps
+  resources:
+  - deployments/status
+  verbs:
+  - get
+- apiGroups:
+  - apps.x893675.github.io
+  resources:
+  - configdeployments
+  verbs:
+  - create
+  - delete
+  - get
+  - list
+  - patch
+  - update
+  - watch
+- apiGroups:
+  - apps.x893675.github.io
+  resources:
+  - configdeployments/finalizers
+  verbs:
+  - update
+- apiGroups:
+  - apps.x893675.github.io
+  resources:
+  - configdeployments/status
+  verbs:
+  - get
+  - patch
+  - update
+- apiGroups:
+  - apps.x893675.github.io
+  resources:
+  - simpledeployments
+  verbs:
+  - create
+  - delete
+  - get
+  - list
+  - patch
+  - update
+  - watch
+- apiGroups:
+  - apps.x893675.github.io
+  resources:
+  - simpledeployments/finalizers
+  verbs:
+  - update
+- apiGroups:
+  - apps.x893675.github.io
+  resources:
+  - simpledeployments/status
+  verbs:
+  - get
+  - patch
+  - update
+- apiGroups:
+  - demo.x893675.github.io
+  resources:
+  - guestbooks
+  verbs:
+  - create
+  - delete
+  - get
+  - list
+  - patch
+  - update
+  - watch
+- apiGroups:
+  - demo.x893675.github.io
+  resources:
+  - guestbooks/finalizers
+  verbs:
+  - update
+- apiGroups:
+  - demo.x893675.github.io
+  resources:
+  - guestbooks/status
+  verbs:
+  - get
+  - patch
+  - update
+- apiGroups:
+  - iam.x893675.github.io
+  resources:
+  - tokens
+  verbs:
+  - create
+  - delete
+  - get
+  - list
+  - patch
+  - update
+  - watch
+- apiGroups:
+  - iam.x893675.github.io
+  resources:
+  - tokens/finalizers
+  verbs:
+  - update
+- apiGroups:
+  - iam.x893675.github.io
+  resources:
+  - tokens/status
+  verbs:
+  - get
+  - patch
+  - update
