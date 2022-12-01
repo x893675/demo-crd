@@ -71,8 +71,10 @@
         - localhost
         - demo-crd2-webhook-service
         - demo-crd2-webhook-service.demo-crd2-system
+        - demo-crd2-webhook-service.demo-crd2-system.svc
         - demo-crd2-controller-manager-metrics-service
         - demo-crd2-controller-manager-metrics-service.demo-crd2-system
+        - demo-crd2-controller-manager-metrics-service.demo-crd2-system.svc
       ips:
         - 127.0.0.1
     commonName: demo-manager

@@ -17,6 +17,8 @@ limitations under the License.
 package v1
 
 import (
+	"net/mail"
+
 	"k8s.io/apimachinery/pkg/runtime"
 	ctrl "sigs.k8s.io/controller-runtime"
 	logf "sigs.k8s.io/controller-runtime/pkg/log"
@@ -41,7 +43,9 @@ var _ webhook.Defaulter = &Guestbook{}
 // Default implements webhook.Defaulter so a webhook will be registered for the type
 func (r *Guestbook) Default() {
 	guestbooklog.Info("default", "name", r.Name)
-
+	if r.Spec.Foo == "" {
+		r.Spec.Foo = "default_value"
+	}
 	// TODO(user): fill in your defaulting logic.
 }
 
@@ -53,17 +57,17 @@ var _ webhook.Validator = &Guestbook{}
 // ValidateCreate implements webhook.Validator so a webhook will be registered for the type
 func (r *Guestbook) ValidateCreate() error {
 	guestbooklog.Info("validate create", "name", r.Name)
-
+	_, err := mail.ParseAddress(r.Spec.Email)
+	return err
 	// TODO(user): fill in your validation logic upon object creation.
-	return nil
 }
 
 // ValidateUpdate implements webhook.Validator so a webhook will be registered for the type
 func (r *Guestbook) ValidateUpdate(old runtime.Object) error {
 	guestbooklog.Info("validate update", "name", r.Name)
-
+	_, err := mail.ParseAddress(r.Spec.Email)
+	return err
 	// TODO(user): fill in your validation logic upon object update.
-	return nil
 }
 
 // ValidateDelete implements webhook.Validator so a webhook will be registered for the type

@@ -30,6 +30,9 @@ type GuestbookSpec struct {
 
 	// Foo is an example field of Guestbook. Edit guestbook_types.go to remove/update
 	Foo string `json:"foo,omitempty"`
+	// Bar is an example field of Guestbook.
+	//+kubebuilder:validation:Required
+	Email string `json:"email"`
 }
 
 // GuestbookStatus defines the observed state of Guestbook

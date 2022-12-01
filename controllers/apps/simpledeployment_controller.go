@@ -18,9 +18,12 @@ package apps
 
 import (
 	"context"
+	"fmt"
 
 	kapps "k8s.io/api/apps/v1"
+	corev1 "k8s.io/api/core/v1"
 	"k8s.io/apimachinery/pkg/api/errors"
+	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	"k8s.io/apimachinery/pkg/runtime"
 	"k8s.io/apimachinery/pkg/types"
 	ctrl "sigs.k8s.io/controller-runtime"
@@ -69,33 +72,19 @@ func (r *SimpleDeploymentReconciler) Reconcile(ctx context.Context, req ctrl.Req
 		Build the deployment that we want to see exist within the cluster
 	*/
 
-	deployment := &kapps.Deployment{}
-
-	// Set the information you care about
-	deployment.Spec.Replicas = simpleDeployment.Spec.Replicas
-
-	/*
-		Set the controller reference, specifying that this `Deployment` is controlled by the `SimpleDeployment` being reconciled.
-		This will allow for the `SimpleDeployment` to be reconciled when changes to the `Deployment` are noticed.
-	*/
-	if err := controllerutil.SetControllerReference(&simpleDeployment, deployment, r.Scheme); err != nil {
-		return ctrl.Result{}, err
-	}
-
-	/*
-		Manage your `Deployment`.
-		- Create it if it doesn't exist.
-		- Update it if it is configured incorrectly.
-	*/
 	foundDeployment := &kapps.Deployment{}
-	err := r.Get(ctx, types.NamespacedName{Name: deployment.Name, Namespace: deployment.Namespace}, foundDeployment)
+	err := r.Get(ctx, types.NamespacedName{Name: simpleDeployment.Name, Namespace: simpleDeployment.Namespace}, foundDeployment)
 	if err != nil && errors.IsNotFound(err) {
-		logs.V(1).Info("Creating Deployment", "deployment", deployment.Name)
+		logs.V(1).Info("Creating Deployment", "deployment", simpleDeployment.Name)
+		deployment := initDeployment(simpleDeployment.Name, simpleDeployment.Namespace)
+		if err := controllerutil.SetControllerReference(&simpleDeployment, deployment, r.Scheme); err != nil {
+			return ctrl.Result{}, err
+		}
 		err = r.Create(ctx, deployment)
 	} else if err == nil {
-		if foundDeployment.Spec.Replicas != deployment.Spec.Replicas {
-			foundDeployment.Spec.Replicas = deployment.Spec.Replicas
-			logs.V(1).Info("Updating Deployment", "deployment", deployment.Name)
+		if foundDeployment.Spec.Replicas != simpleDeployment.Spec.Replicas {
+			foundDeployment.Spec.Replicas = simpleDeployment.Spec.Replicas
+			logs.V(1).Info("Updating Deployment", "deployment", simpleDeployment.Name)
 			err = r.Update(ctx, foundDeployment)
 		}
 	}
@@ -109,4 +98,43 @@ func (r *SimpleDeploymentReconciler) SetupWithManager(mgr ctrl.Manager) error {
 		For(&appsv1.SimpleDeployment{}).
 		Owns(&kapps.Deployment{}).
 		Complete(r)
+}
+
+func initDeployment(name, ns string) *kapps.Deployment {
+	return &kapps.Deployment{
+		ObjectMeta: metav1.ObjectMeta{
+			Name:      name,
+			Namespace: ns,
+			Labels: map[string]string{
+				"app": fmt.Sprintf("d-%s", name),
+			},
+		},
+		Spec: kapps.DeploymentSpec{
+			Selector: &metav1.LabelSelector{
+				MatchLabels: map[string]string{
+					"app": fmt.Sprintf("d-%s", name),
+				},
+			},
+			Template: corev1.PodTemplateSpec{
+				ObjectMeta: metav1.ObjectMeta{
+					Labels: map[string]string{
+						"app": fmt.Sprintf("d-%s", name),
+					},
+				},
+				Spec: corev1.PodSpec{
+					Containers: []corev1.Container{
+						{
+							Name:  "nginx",
+							Image: "nginx:alpine",
+							Ports: []corev1.ContainerPort{
+								{
+									ContainerPort: 80,
+								},
+							},
+						},
+					},
+				},
+			},
+		},
+	}
 }

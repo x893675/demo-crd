@@ -9,4 +9,4 @@ metadata:
     app.kubernetes.io/created-by: demo-crd2
   name: guestbook-sample
 spec:
-  # TODO(user): Add fields here
+  email: hanamichi@hanamichi.wiki
