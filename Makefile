@@ -130,10 +130,16 @@ $(LOCALBIN):
 KUSTOMIZE ?= $(LOCALBIN)/kustomize
 CONTROLLER_GEN ?= $(LOCALBIN)/controller-gen
 ENVTEST ?= $(LOCALBIN)/setup-envtest
+CLIENT_GEN ?= $(LOCALBIN)/client-gen
+LISTERS_GEN ?= $(LOCALBIN)/lister-gen
+INFORMERS_GEN ?= $(LOCALBIN)/informer-gen
 
 ## Tool Versions
 KUSTOMIZE_VERSION ?= v3.8.7
 CONTROLLER_TOOLS_VERSION ?= v0.9.2
+CLIENT_GEN_VERSION ?= v0.25.0
+LISTERS_GEN_VERSION ?= v0.25.0
+INFORMERS_GEN_VERSION ?= v0.25.0
 
 KUSTOMIZE_INSTALL_SCRIPT ?= "https://raw.githubusercontent.com/kubernetes-sigs/kustomize/master/hack/install_kustomize.sh"
 .PHONY: kustomize
@@ -150,3 +156,23 @@ $(CONTROLLER_GEN): $(LOCALBIN)
 envtest: $(ENVTEST) ## Download envtest-setup locally if necessary.
 $(ENVTEST): $(LOCALBIN)
 	test -s $(LOCALBIN)/setup-envtest || GOBIN=$(LOCALBIN) go install sigs.k8s.io/controller-runtime/tools/setup-envtest@latest
+
+.PHONY: client-gen
+client-gen: $(CLIENT_GEN) ## Download client-gen locally if necessary.
+$(CLIENT_GEN): $(LOCALBIN)
+	test -s $(LOCALBIN)/client-gen || GOBIN=$(LOCALBIN) go install k8s.io/code-generator/cmd/client-gen@$(CLIENT_GEN_VERSION)
+
+.PHONY: lister-gen
+lister-gen: $(LISTERS_GEN) ## Download lister-gen locally if necessary.
+$(LISTERS_GEN): $(LOCALBIN)
+	test -s $(LOCALBIN)/lister-gen || GOBIN=$(LOCALBIN) go install k8s.io/code-generator/cmd/lister-gen@$(LISTERS_GEN_VERSION)
+
+.PHONY: informer-gen
+informer-gen: $(INFORMERS_GEN) ## Download informer-gen locally if necessary.
+$(INFORMERS_GEN): $(LOCALBIN)
+	test -s $(LOCALBIN)/informer-gen || GOBIN=$(LOCALBIN) go install k8s.io/code-generator/cmd/informer-gen@$(INFORMERS_GEN_VERSION)
+
+GV="apps:v1"
+.PHONY: clientset
+clientset: client-gen lister-gen informer-gen ## Generate clientset.
+	bash ./hack/generate_client.sh ${GV}
